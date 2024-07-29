@@ -20,10 +20,18 @@ jobs:
           python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-      - name: Run tests
+      - name: Install pytest
+        run: pip install pytest
+
+      - name: Check for tests
         run: |
-          pip install pytest
-          pytest
-          
+          if ! ls tests/test_*.py 1> /dev/null 2>&1; then
+            echo "No test files found matching the pattern 'tests/test_*.py'";
+            exit 1;
+          fi
+
+      - name: Run tests
+        run: pytest tests/
+
       - name: Display Python version
         run: python -c "import sys; print(sys.version)"
